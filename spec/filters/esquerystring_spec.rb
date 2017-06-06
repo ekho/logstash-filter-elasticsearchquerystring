@@ -18,7 +18,7 @@ describe LogStash::Filters::Esquerystring do
     CONFIG
 
     sample("src" => "arg1") do
-      insist { subject.get("dst") } == "arg1"
+      insist { subject.get("dst") } == '("arg1")'
     end
   end
 
@@ -33,7 +33,7 @@ describe LogStash::Filters::Esquerystring do
     CONFIG
 
     sample("src" => ["arg1", "arg2"]) do
-      insist { subject.get("dst") } == "(arg1 OR arg2)"
+      insist { subject.get("dst") } == '("arg1" OR "arg2")'
     end
   end
 
@@ -48,7 +48,7 @@ describe LogStash::Filters::Esquerystring do
     CONFIG
 
     sample("src" => ["arg1", "arg2", "arg2", "arg3"]) do
-      insist { subject.get("dst") } == "(arg1 OR arg2 OR arg3)"
+      insist { subject.get("dst") } == '("arg1" OR "arg2" OR "arg3")'
     end
   end
 

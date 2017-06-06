@@ -18,9 +18,14 @@ class LogStash::Filters::Esquerystring < LogStash::Filters::Base
     return unless event.include?(@source)
 
     value = event.get(@source)
-    if value.is_a?(Array)
-      value = "(" + value.uniq.join(" OR ") + ")"
-    end
+
+    return if value.nil?
+
+    value = [value] unless value.is_a?(Array)
+
+    return if value.length == 0
+
+    value = "(" + value.uniq.map { |x| '"' + x + '"' }.join(" OR ") + ")"
 
     event.set(@target, value)
   end # def filter
