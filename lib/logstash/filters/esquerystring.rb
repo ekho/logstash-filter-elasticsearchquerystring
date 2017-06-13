@@ -5,7 +5,7 @@ require "logstash/namespace"
 class LogStash::Filters::Esquerystring < LogStash::Filters::Base
   config_name "esquerystring"
 
-  config :source, :validate => :string, :required => true
+  config :source, :validate => :array, :required => true
   config :target, :validate => :string, :required => true
 
   public
@@ -15,19 +15,20 @@ class LogStash::Filters::Esquerystring < LogStash::Filters::Base
 
   public
   def filter(event)
-    return unless event.include?(@source)
+    values = []
 
-    value = event.get(@source)
+    @source.each do |field|
+      next unless event.include?(field)
+      value = event.get(field)
+      next if value.nil?
+      value = [value] unless value.is_a?(Array)
+      next if value.length == 0
+      values += value
+    end
 
-    return if value.nil?
-
-    value = [value] unless value.is_a?(Array)
-
-    return if value.length == 0
-
-    value = "(" + value.uniq.map { |x| '"' + x + '"' }.join(" OR ") + ")"
-
-    event.set(@target, value)
+    return if values.length == 0
+    values = "(" + values.uniq.map { |x| '"' + x + '"' }.join(" OR ") + ")"
+    event.set(@target, values)
   end # def filter
 
 end # class LogStash::Filters::Esquerystring
