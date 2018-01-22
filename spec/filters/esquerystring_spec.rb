@@ -94,4 +94,38 @@ describe LogStash::Filters::Esquerystring do
       insist { subject.get("dst") } == '("arg1" OR "arg2")'
     end
   end
+
+  describe "esquerystring string with too long array and without autofix" do
+    config <<-CONFIG
+      filter {
+        esquerystring {
+          source         => "src"
+          target         => "dst"
+          maxlength      => 20
+          length_autofix => false
+        }
+      }
+    CONFIG
+
+    sample("src" => ["arg1", "arg2", "arg3", "arg4"]) do
+      insist { subject.get("dst") } == nil
+    end
+  end
+
+  describe "esquerystring string with too long array and with autofix" do
+    config <<-CONFIG
+      filter {
+        esquerystring {
+          source         => "src"
+          target         => "dst"
+          maxlength      => 20
+          length_autofix => true
+        }
+      }
+    CONFIG
+
+    sample("src" => ["arg1", "arg2", "arg3", "arg4"]) do
+      insist { subject.get("dst") } == '("arg1" OR "arg2")'
+    end
+  end
 end
