@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 
   s.name            = 'logstash-filter-esquerystring'
-  s.version         = '1.2.0'
+  s.version         = '1.3.0'
   s.licenses        = ['Apache-2.0']
   s.summary         = "This filter converts values of source field to elasticsearch query string"
   s.description     = "This gem is a Logstash plugin required to be installed on top of the Logstash core pipeline using $LS_HOME/bin/logstash-plugin install gemname. This gem is not a stand-alone program"
