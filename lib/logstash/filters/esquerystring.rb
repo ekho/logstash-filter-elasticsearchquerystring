@@ -7,8 +7,8 @@ class LogStash::Filters::Esquerystring < LogStash::Filters::Base
 
   config :source, :validate => :array, :required => true
   config :target, :validate => :string, :required => true
-  config :maxlength, :validate => :number, :default => 4096
-  config :length_autofix, :validate => :bool, :default => false
+  config :maxlength, :validate => :number, :default => 4096, :required => false
+  config :length_autofix, :validate => :boolean, :default => false, :required => false
 
   public
   def register
@@ -29,11 +29,11 @@ class LogStash::Filters::Esquerystring < LogStash::Filters::Base
     end
 
     return if values.length == 0
-    values.uniq!.map! { |x| '"' + x + '"' }
+    values = values.uniq.map { |x| '"' + x + '"' }
     values_str = "(" + values.join(" OR ") + ")"
     if values_str.length > @maxlength
       msg = "Produced too long query string (>#{@maxlength}): #{values_str}"
-      if @length_auto_fix
+      if @length_autofix
         while values_str.length > @maxlength
           values.pop
           values_str = "(" + values.join(" OR ") + ")"
