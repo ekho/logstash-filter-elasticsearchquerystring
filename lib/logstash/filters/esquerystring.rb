@@ -28,6 +28,8 @@ class LogStash::Filters::Esquerystring < LogStash::Filters::Base
       values += value
     end
 
+    values.compact!
+
     return if values.length == 0
     values = values.uniq.map { |x| '"' + x + '"' }
     values_str = "(" + values.join(" OR ") + ")"
